@@ -49,7 +49,7 @@ function setup() {
             linkEstablished = true;
             robo = new Robot(pwm);
         }
-    
+
     });
 };
 
@@ -79,7 +79,7 @@ app.get('/', (req, res) => {
 
 app.get('/move', (req, res) => {
     if (linkEstablished) {
-        robo.executeSingleMove(req.query.limb,req.query.dir);
+        robo.executeSingleMove(req.query.limb, parseInt(req.query.dir));
         // rightWrist.setPulse(parseInt(req.query.pulse));
         res.send("Receieved request for "+req.query.limb);
     } else {
@@ -88,6 +88,14 @@ app.get('/move', (req, res) => {
  })
 
 app.get('/status', (req, res) => {
+    if (linkEstablished) {
+        return res.send("1");
+    } else {
+        return res.send("0");
+    }
+})
+
+app.get('/getstate', (req, res) => {
     if (linkEstablished) {
         return res.send("1");
     } else {

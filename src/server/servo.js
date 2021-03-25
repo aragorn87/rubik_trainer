@@ -11,26 +11,34 @@ export default class Servo {
     }
     
     setPulse(newPulse) {
-        var incremental;
-        if(newPulse<this.minPulse | newPulse>this.maxPulse) {
-            return 0;
-        } else {
-            while (this.currentPos!=newPulse) {
-                if (newPulse>this.currentPos) {
-                    incremental = 5;
-                } else {
-                    incremental = -5;
+        return new Promise(resolve => {
+            var incremental;
+            if(newPulse<this.minPulse | newPulse>this.maxPulse) {
+                resolve();
+            } else {
+                while (this.currentPos!=newPulse) {
+                    if (newPulse>this.currentPos) {
+                        incremental = 5;
+                    } else {
+                        incremental = -5;
+                    }
+                    this.pcaHandler.setPulseLength(this.id, this.currentPos+incremental);
+                    this.currentPos = this.currentPos + incremental;
+                setTimeout(() => {this.setPulse(newPulse)}, 50);
                 }
-                this.pcaHandler.setPulseLength(this.id, this.currentPos+incremental);
-                this.currentPos = this.currentPos + incremental;
-            setTimeout(() => {this.setPulse(newPulse)}, 50);
+                resolve();
             }
-            return 1;
-        }
-    }
+        });
 
+    }
+ 
     Home() {
-        this.pcaHandler.setPulseLength(this.id, this.startPos);
-        // await new Promise(r => setTimeout(r, 2000));
+        return new Promise(resolve => {
+            console.log("Homing " + this.name);
+            // this.pcaHandler.setPulseLength(this.id, this.startPos);
+            this.setPulse(this.startPos);
+            this.currentPos=this.startPos;
+            resolve();
+        });
     }
 };

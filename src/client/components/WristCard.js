@@ -7,9 +7,7 @@ import Button from '@material-ui/core/Button';
 
 
 
-function OutlinedCard(props) {
-
-  const [angle, setAngle] = useState("Closed");
+function WristCard(props) {
 
   return (
     <Card variant="outlined">
@@ -18,25 +16,29 @@ function OutlinedCard(props) {
           {props.name}
         </Typography>
         <Typography variant="h5" component="h1" align="center">
-          { angle }
-        </Typography>
-        <Typography variant="body2" component="p">
-          Min = {props.min} ; Max = {props.max}
+          {/* { props.state[props.name] } */}
         </Typography>
       </CardContent>
       <CardActions>
         <Button
           color="primary"
           onClick={() => {
-            fetch("http://192.168.18.19:3001/move?limb="+props.name+"&dir=0");
-            if (angle=="Closed") {setAngle("Opened");} else {setAngle("Closed");};
+            fetch("http://192.168.18.21:3001/move?limb=" + props.name + "&dir=1");
+            // props.setState(0);
           }}
-          disabled={angle>=props.max?true:false}
-        >Toggle
+        >Clockwise
+        </Button>
+        <Button
+          color="secondary"
+          onClick={() => {
+            fetch("http://192.168.18.21:3001/move?limb="+props.name+"&dir=-1");
+            // props.setState(1);
+          }}
+        >Anti
         </Button>
       </CardActions>
     </Card>
   );
 }
 
-export default OutlinedCard;
+export default WristCard;

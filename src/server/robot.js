@@ -10,22 +10,41 @@ export default class Robot {
         this.leftClaw = new Claw(1, "leftClaw", 1850, 2100, 1850, pwm);
         this.leftWrist = new Wrist(0, "leftArm", 800, 2200, 1500, pwm);
         this.rightWrist = new Wrist(2, "rightWrist", 800, 2120, 1500, pwm);
-    }
+    };
 
-    Home() {
-        this.rightClaw.Home();
-        this.leftClaw.Home();
-        this.leftWrist.Home()
-        this.rightWrist.Home();
-    }
+    async Home() {
+        this.rightClaw.Home()
+        .then(this.leftClaw.Home())
+        .then(this.leftWrist.Home())
+        .then(this.rightWrist.Home());
+    };
+
+    getState() {
+        return {
+            'left': this.leftWrist.getCurrentState(),
+            'right': this.rightWrist.getCrrentState()
+        };
+    };
 
     willGearsCollide(limb, pulse) {
         if (limb==="rightClaw" | limb==="leftClaw") {
-            return False;
-        }
+            return false;
+        };
 
+        if (limb === "leftWrist") {
+            if ((this.leftWrist.SimulateMove(pulse) === 2 | this.leftWrist.SimulateMove(pulse) === 0) & (this.rightWrist.getCurrentState() === 2 | this.rightWrist.getCurrentState() === 0)) {
+                return true;
+            }
+        };
 
-    }
+        if (limb === "rightWrist") {
+            if ((this.rightWrist.SimulateMove(pulse)===2 | this.rightWrist.SimulateMove(pulse)===0) & (this.leftWrist.getCurrentState()===2 | this.leftWrist.getCurrentState()===0)) {
+                return true;
+            }
+        };
+
+        return false;
+    };
 
     executeSingleMove(limb, pulse) {
         if (limb=="rightClaw") {
@@ -35,33 +54,41 @@ export default class Robot {
             this.leftClaw.isOpened?this.leftClaw.Close():this.leftClaw.Open();
             };
         if (limb=="leftWrist") {
-            if (pulse==1) {
-                if ((this.leftWrist.SimulateMove(1)==2 | this.leftWrist.SimulateMove(1)==0) & (this.rightWrist.getCurrentState()==2 | this.rightWrist.getCurrentState()==0)) {
+            if (this.willGearsCollide(limb, pulse)) {
+                if (this.rightClaw.isOpened) {
                     this.rightWrist.Home();
-                    // return -1
-                }
-                this.leftWrist.Move();
-            } else {
-                if ((this.leftWrist.SimulateMove(0)==2 | this.leftWrist.SimulateMove(0)==0) & (this.rightWrist.getCurrentState()==2 | this.rightWrist.getCurrentState()==0)) {
-                    return -1
-                }
-                this.leftWrist.MovePrime();
-            }
-            };
-            if (limb=="rightWrist") {
-                if (pulse==1) {
-                    if ((this.rightWrist.SimulateMove(1)==2 | this.rightWrist.SimulateMove(1)==0) & (this.leftWrist.getCurrentState()==2 | this.leftWrist.getCurrentState()==0)) {
-                        return -1
-                    }
-                    this.rightWrist.Move();
                 } else {
-                    if ((this.rightWrist.SimulateMove(0)==2 | this.rightWrist.SimulateMove(0)==0) & (this.leftWrist.getCurrentState()==2 | this.leftWrist.getCurrentState()==0)) {
-                        return -1
-                    }
-                    this.rightWrist.MovePrime();
+                    this.rightClaw.Open()
+                    .then(this.rightWrist.Home())
+                    .then(this.rightClaw.Close());
                 }
-                };
-        };
+                // this.rightWrist.Home();
+                console.log('leftwrist will collide');
+            } else {
+                // return 1;
+                console.log('leftwrist will not collide');
+                pulse === 1 ? this.leftWrist.Move() : this.leftWrist.MovePrime();
+            };
+            };
+        if (limb=="rightWrist") {
+            if (this.willGearsCollide(limb, pulse)) {
+                if (this.leftClaw.isOpened) {
+                    this.leftWrist.Home();
+                } else {
+                    this.leftClaw.Open()
+                    .then(this.leftWrist.Home())
+                    .then(this.leftClaw.Close())
+                    .then(pulse === 1 ? this.rightWrist.Move() : this.rightWrist.MovePrime());
+                }
+                // this.rightWrist.Home();
+                console.log('rightwrist will collide');
+            } else {
+                // return 1;
+                console.log('rightwrist will not collide');
+                pulse === 1 ? this.rightWrist.Move() : this.rightWrist.MovePrime();
+            };
+            };
+    };
 
     };
 

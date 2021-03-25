@@ -7,24 +7,32 @@ export default class Claw extends Servo {
     };
 
     Open(){
-        if (!this.isOpened){
-            if(this.currentPos!=this.min){
-                this.setPulse(this.min);
-            }  else {
-                this.setPulse(this.max);
+        return new Promise(resolve => {
+            if (!this.isOpened){
+                if(this.currentPos!=this.min){
+                    this.setPulse(this.min);
+                }  else {
+                    this.setPulse(this.max);
+                };
+                this.isOpened=true;
             };
-            this.isOpened=true;
-        };
+            resolve();
+        });
+
     };
 
     Close(){
-        if (this.isOpened){
-            if(this.currentPos!=this.min){
-                this.setPulse(this.min);
-            }  else {
-                this.setPulse(this.max);
+        return new Promise(resolve => {
+            if (this.isOpened){
+                if(this.currentPos!=this.min){
+                    this.setPulse(this.min);
+                }  else {
+                    this.setPulse(this.max);
+                };
+                this.isOpened = false;
+                console.log("her")
             };
-            this.isOpened = false;
-        };
+            resolve();
+        });
     };
 }
