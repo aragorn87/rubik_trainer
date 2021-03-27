@@ -12,7 +12,7 @@ const options = {
     i2c: i2cBus.openSync(1),
     address: 0x40,
     frequency: 30,
-    debug: true
+    debug: false
 };
 
 

@@ -9,36 +9,43 @@ export default class Servo {
         this.currentPos=startPos;
         this.pcaHandler.setPulseLength(this.id, startPos);
     }
-    
+
     setPulse(newPulse) {
         return new Promise(resolve => {
+            console.log(newPulse);
             var incremental;
-            if(newPulse<this.minPulse | newPulse>this.maxPulse) {
+            if(newPulse<=this.minPulse | newPulse>=this.maxPulse) {
+                console.log("DONE CANT MOVE");
                 resolve();
             } else {
-                while (this.currentPos!=newPulse) {
+                if (newPulse===this.currentPos) {
+                    console.log(this.name+" DONE");
+                    setTimeout(this.newMethod(resolve),3000);
+                } else {
                     if (newPulse>this.currentPos) {
                         incremental = 5;
                     } else {
                         incremental = -5;
-                    }
-                    this.pcaHandler.setPulseLength(this.id, this.currentPos+incremental);
+                    };
                     this.currentPos = this.currentPos + incremental;
-                setTimeout(() => {this.setPulse(newPulse)}, 50);
-                }
-                resolve();
-            }
-        });
+                    this.pcaHandler.setPulseLength(this.id, this.currentPos, 0, () => {
+                        // console.log(this.name+": SUCCESS: "+Date.now());
+                        // console.log(this.currentPos, newPulse);
+                        resolve(this.setPulse(newPulse));
+                    });
+                    };
+                };
+            });
+        };
 
+    newMethod(resolve) {
+        return resolve(console.log("Resolved after 3 seconds"));
     }
- 
+
     Home() {
-        return new Promise(resolve => {
-            console.log("Homing " + this.name);
-            // this.pcaHandler.setPulseLength(this.id, this.startPos);
-            this.setPulse(this.startPos);
-            this.currentPos=this.startPos;
-            resolve();
-        });
+        console.log("Homing " + this.name);
+        // this.pcaHandler.setPulseLength(this.id, this.startPos);
+        return this.setPulse(this.startPos);
+
     }
 };

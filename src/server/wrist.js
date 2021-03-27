@@ -25,7 +25,8 @@ export default class Wrist extends Servo {
         if (currentIndex==-1) {
             return;
         } else {
-            this.setPulse(this.logicalSeq[(currentIndex+1) % this.logicalSeq.length]);
+            console.log("Moved");
+            return this.setPulse(this.logicalSeq[(currentIndex+1) % this.logicalSeq.length]);
         }
 
     };
@@ -35,7 +36,8 @@ export default class Wrist extends Servo {
         if (currentIndex==-1) {
             return;
         } else {
-            this.setPulse(this.logicalSeq[(currentIndex-1)<0?this.logicalSeq.length-1:(currentIndex-1)]);
+            console.log("Moved Prime");
+            return this.setPulse(this.logicalSeq[(currentIndex-1)<0?this.logicalSeq.length-1:(currentIndex-1)]);
         }
 
     };

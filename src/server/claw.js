@@ -7,32 +7,36 @@ export default class Claw extends Servo {
     };
 
     Open(){
-        return new Promise(resolve => {
-            if (!this.isOpened){
-                if(this.currentPos!=this.min){
-                    this.setPulse(this.min);
-                }  else {
-                    this.setPulse(this.max);
-                };
+        console.log(Date.now());
+        console.log("Entering open loop now");
+        if (!this.isOpened){
+            if(this.currentPos!=this.min){
                 this.isOpened=true;
+                console.log("opened");
+                return this.setPulse(this.min);
+            }  else {
+                this.isOpened=true;
+                console.log("opened");
+                return this.setPulse(this.max);
             };
-            resolve();
-        });
-
+        };
     };
 
     Close(){
-        return new Promise(resolve => {
-            if (this.isOpened){
-                if(this.currentPos!=this.min){
-                    this.setPulse(this.min);
-                }  else {
-                    this.setPulse(this.max);
-                };
+        console.log(Date.now());
+        console.log("Entering close loop now");
+        if (this.isOpened){
+            if(this.currentPos!=this.min){
                 this.isOpened = false;
-                console.log("her")
+                console.log("closed");
+                return this.setPulse(this.min);
+                
+            }  else {
+                this.isOpened = false;
+                console.log("closed");
+                return this.setPulse(this.max);
             };
-            resolve();
-        });
+        };
+
     };
 }
