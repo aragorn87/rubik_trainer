@@ -3,9 +3,11 @@ import i2cBus from "i2c-bus";
 import {Pca9685Driver} from "pca9685";
 import Servo from "./servo.js";
 import Robot from './robot.js';
+import cors from 'cors';
 
 
 const app = express();
+app.use(cors());
 const port = 3001;
 
 const options = {
@@ -87,8 +89,26 @@ app.get('/move', (req, res) => {
     }
  })
 
+app.get('/namedmoves', (req, res) => {
+    if (linkEstablished) {
+        const moves = robo.executeNamedMove(req.query.move);
+        res.send(moves);
+    } else {
+        res.send("No link established")
+    }
+ })
+
 app.get('/status', (req, res) => {
     if (linkEstablished) {
+        return res.send("1");
+    } else {
+        return res.send("0");
+    }
+})
+
+app.get('/init', (req, res) => {
+    if (linkEstablished) {
+        robo.initCube();
         return res.send("1");
     } else {
         return res.send("0");

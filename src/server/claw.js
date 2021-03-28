@@ -6,6 +6,11 @@ export default class Claw extends Servo {
         this.isOpened = false;
     };
 
+    Init() {
+        this.isOpened=true;
+        return this.setPulse(this.startPos+100);
+    };
+    
     Open(){
         console.log(Date.now());
         console.log("Entering open loop now");

@@ -12,15 +12,12 @@ export default class Servo {
 
     setPulse(newPulse) {
         return new Promise(resolve => {
-            console.log(newPulse);
             var incremental;
             if(newPulse<=this.minPulse | newPulse>=this.maxPulse) {
-                console.log("DONE CANT MOVE");
                 resolve();
             } else {
                 if (newPulse===this.currentPos) {
-                    console.log(this.name+" DONE");
-                    setTimeout(this.newMethod(resolve),3000);
+                    setTimeout(resolve, 400);
                 } else {
                     if (newPulse>this.currentPos) {
                         incremental = 5;
@@ -38,9 +35,6 @@ export default class Servo {
             });
         };
 
-    newMethod(resolve) {
-        return resolve(console.log("Resolved after 3 seconds"));
-    }
 
     Home() {
         console.log("Homing " + this.name);
